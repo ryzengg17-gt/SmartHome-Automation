@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHome Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #0d1117;
+            color: white;
+            padding: 20px;
+        }
+        .card {
+            background: #161b22;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SmartHome Dashboard</h1>
+
+    <div class="card">
+        <h2>Suhu & Cuaca</h2>
+        <p>Suhu Ruangan : <span id="suhu">--</span>°C</p>
+        <p>Kondisi Cuaca : <span id="cuaca">--</span></p>
+    </div>
+
+    <div class="card">
+        <h2>Monitoring Gas</h2>
+        <p>Gas Status : <span id="gas">--</span></p>
+    </div>
+
+    <div class="card">
+        <h2>Lampu</h2>
+        <button onclick="toggleLampu(1)">Lampu 1</button>
+        <button onclick="toggleLampu(2)">Lampu 2</button>
+        <button onclick="toggleLampu(3)">Lampu 3</button>
+        <button onclick="toggleLampu(4)">Lampu 4</button>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
