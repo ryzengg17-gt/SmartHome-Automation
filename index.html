@@ -1,65 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SmartHome Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Dashboard - Smart Home</title>
 </head>
-<body>
+<body class="dashboard-body">
 
-<div class="topbar">
-    <h2>SmartHome Dashboard</h2>
-    <button class="btn" onclick="openPopup()">Ganti Password</button>
-</div>
+<!-- Animasi Awan -->
+<div class="cloud cloud1"></div>
+<div class="cloud cloud2"></div>
 
-<div class="dashboard-container">
+<h1 class="dash-title">Smart Home Dashboard</h1>
 
-    <div class="cards">
+<div class="grid-container">
 
-        <div class="card">
-            <h3>Lampu 1</h3>
-            <div class="switch" onclick="toggleLamp('lamp1')" id="lamp1">
-                <div class="switch-circle"></div>
-            </div>
+    <!-- Temperatur -->
+    <div class="card">
+        <h3>Temperatur</h3>
+        <div class="temp-circle">
+            <span id="tempValue">--°C</span>
         </div>
-
-        <div class="card">
-            <h3>Lampu 2</h3>
-            <div class="switch" onclick="toggleLamp('lamp2')" id="lamp2">
-                <div class="switch-circle"></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Lampu 3</h3>
-            <div class="switch" onclick="toggleLamp('lamp3')" id="lamp3">
-                <div class="switch-circle"></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Lampu 4</h3>
-            <div class="switch" onclick="toggleLamp('lamp4')" id="lamp4">
-                <div class="switch-circle"></div>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Gas -->
+    <div class="card">
+        <h3>Kadar Gas</h3>
+        <p id="gasValue" class="big-value">-- ppm</p>
+    </div>
+
+    <!-- Cuaca -->
+    <div class="card">
+        <h3>Cuaca</h3>
+        <div id="weatherIcon" class="weather-icon"></div>
+        <p id="weatherValue">--</p>
+    </div>
+
+    <!-- Lampu -->
+    <div class="card">
+        <h3>Lampu Ruangan</h3>
+        <button class="toggle-btn" onclick="toggleLamp(1)" id="lamp1">Lampu 1 - OFF</button>
+        <button class="toggle-btn" onclick="toggleLamp(2)" id="lamp2">Lampu 2 - OFF</button>
+        <button class="toggle-btn" onclick="toggleLamp(3)" id="lamp3">Lampu 3 - OFF</button>
+        <button class="toggle-btn" onclick="toggleLamp(4)" id="lamp4">Lampu 4 - OFF</button>
+    </div>
+
 </div>
 
-<!-- Popup Ganti Password -->
-<div class="popup" id="popup">
-    <div class="box">
+<!-- Button Settings -->
+<button class="settings-btn" onclick="openSettings()">⚙</button>
+
+<!-- Popup Settings -->
+<div id="settingsPopup" class="popup">
+    <div class="popup-content">
         <h3>Ganti Username & Password</h3>
 
-        <input id="newUser" class="input" placeholder="Username baru"><br><br>
-        <input id="newPass" class="input" type="password" placeholder="Password baru"><br><br>
+        <input id="newUser" placeholder="Username baru">
+        <input id="newPass" placeholder="Password baru">
 
-        <button class="btn" onclick="saveNewLogin()">Simpan</button>
-        <button class="btn" style="background:#999;margin-top:10px" onclick="closePopup()">Batal</button>
+        <button onclick="saveLoginData()" class="btn-save">Simpan</button>
+        <button onclick="closeSettings()" class="btn-close">Tutup</button>
+
+        <p id="settingsMsg"></p>
     </div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>

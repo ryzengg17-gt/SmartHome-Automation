@@ -1,45 +1,56 @@
-// ========== LOGIN SYSTEM ==========
-let defaultUser = localStorage.getItem("user") || "admin";
-let defaultPass = localStorage.getItem("pass") || "12345";
+/* ====== LOGIN ====== */
+let USER = "admin";
+let PASS = "1234";
 
-function login() {
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("loginForm");
+    if (form) {
+        form.addEventListener("submit", login);
+    }
+});
+
+function login(e) {
+    e.preventDefault();
     let u = document.getElementById("username").value;
     let p = document.getElementById("password").value;
 
-    if (u === defaultUser && p === defaultPass) {
+    if (u === USER && p === PASS) {
         window.location.href = "dashboard.html";
     } else {
-        alert("Username atau password salah!");
+        document.getElementById("loginMsg").innerHTML = "Username / Password salah!";
     }
 }
 
-// ========== LAMPU ON/OFF ==========
+/* ====== DASHBOARD ====== */
+
 function toggleLamp(id) {
-    let sw = document.getElementById(id);
-    sw.classList.toggle("on");
+    let btn = document.getElementById("lamp" + id);
+    let state = btn.classList.contains("on") ? "OFF" : "ON";
+
+    btn.classList.toggle("on");
+    btn.innerHTML = Lampu ${id} - ${state};
 }
 
-// ========== POPUP GANTI PASSWORD ==========
-function openPopup() {
-    document.getElementById("popup").style.display = "flex";
+/* ====== SETTINGS ====== */
+function openSettings() {
+    document.getElementById("settingsPopup").style.display = "flex";
 }
 
-function closePopup() {
-    document.getElementById("popup").style.display = "none";
+function closeSettings() {
+    document.getElementById("settingsPopup").style.display = "none";
 }
 
-function saveNewLogin() {
+function saveLoginData() {
     let newU = document.getElementById("newUser").value;
     let newP = document.getElementById("newPass").value;
 
-    if (newU === "" || newP === "") {
-        alert("Tidak boleh kosong!");
+    if (newU.trim() === "" || newP.trim() === "") {
+        document.getElementById("settingsMsg").innerHTML = "Tidak boleh kosong!";
         return;
     }
 
-    localStorage.setItem("user", newU);
-    localStorage.setItem("pass", newP);
+    USER = newU;
+    PASS = newP;
 
-    alert("Login berhasil diperbarui!");
-    closePopup();
+    document.getElementById("settingsMsg").innerHTML = "Berhasil disimpan!";
 }
