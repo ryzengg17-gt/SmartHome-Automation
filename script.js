@@ -1,61 +1,34 @@
-// URL backend
-const API = "http://localhost:3000/api";
+// ------------------- LAMPU ------------------------
+function toggleLamp(id) {
+    const btn = document.getElementById("lamp" + id);
+    const current = btn.classList.contains("on");
 
-// === UPDATE SENSOR DATA ===
+    if (current) {
+        btn.classList.remove("on");
+        btn.innerText = "OFF";
+        fetch(/lamp/${id}/off);
+    } else {
+        btn.classList.add("on");
+        btn.innerText = "ON";
+        fetch(/lamp/${id}/on);
+    }
+}
+
+// ------------------- UPDATE SENSOR ------------------------
 async function loadData() {
     try {
-        const res = await fetch(API + "/data");
-        const data = await res.json();
+        const r = await fetch("/data");
+        const data = await r.json();
 
-        // Suhu & Gas
-        document.getElementById("temp").innerText = data.temperature + " °C";
-        document.getElementById("gas").innerText = data.gas + " ppm";
+        document.getElementById("cuaca").innerHTML = data.cuaca;
+        document.getElementById("suhuDalam").innerHTML = data.suhuDalam + " °C";
+        document.getElementById("suhuLuar").innerHTML = data.suhuLuar + " °C";
+        document.getElementById("gas").innerHTML = data.gas;
 
-        // Cuaca (icon)
-        updateWeatherIcon(data.weather);
-        document.getElementById("weatherText").innerText = data.weather;
-
-        // Waktu (pagi/siang/sore/malam)
-        document.getElementById("daytime").innerText = data.daytime;
-
-    } catch (err) {
-        console.log("Error load data:", err);
+    } catch(e) {
+        console.log("Gagal mengambil data");
     }
 }
 
-// === UPDATE IKON CUACA ===
-function updateWeatherIcon(weather) {
-    let img = document.getElementById("weatherIcon");
-
-    switch (weather) {
-        case "hujan":
-            img.src = "icons/rain.gif";
-            break;
-        case "panas":
-            img.src = "icons/sun.gif";
-            break;
-        case "mendung":
-            img.src = "icons/cloud.gif";
-            break;
-        case "berkabut":
-            img.src = "icons/fog.gif";
-            break;
-        default:
-            img.src = "icons/cloud.gif";
-    }
-}
-
-// === KONTROL LAMPU ===
-async function toggleLamp(id, state) {
-    await fetch(API + "/lamp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id, state: state })
-    });
-
-    loadData();
-}
-
-// Reload data setiap 2 detik
 setInterval(loadData, 2000);
 loadData();

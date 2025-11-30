@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Home Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1 class="header-title">SMART HOME DASHBOARD</h1>
+
+<div class="dashboard">
+
+    <div class="card">
+        <h3>Kondisi Cuaca</h3>
+        <div id="cuaca" class="value">--</div>
+    </div>
+
+    <div class="card">
+        <h3>Suhu Dalam Rumah</h3>
+        <div id="suhuDalam" class="value">-- °C</div>
+    </div>
+
+    <div class="card">
+        <h3>Suhu Luar Rumah</h3>
+        <div id="suhuLuar" class="value">-- °C</div>
+    </div>
+
+    <div class="card">
+        <h3>Gas MQ-2</h3>
+        <div id="gas" class="value">--</div>
+    </div>
+
+    <!-- Lampu -->
+    <div class="card">
+        <h3>Lampu 1</h3>
+        <button class="btn-toggle" onclick="toggleLamp(1)" id="lamp1">OFF</button>
+    </div>
+
+    <div class="card">
+        <h3>Lampu 2</h3>
+        <button class="btn-toggle" onclick="toggleLamp(2)" id="lamp2">OFF</button>
+    </div>
+
+    <div class="card">
+        <h3>Lampu 3</h3>
+        <button class="btn-toggle" onclick="toggleLamp(3)" id="lamp3">OFF</button>
+    </div>
+
+    <div class="card">
+        <h3>Lampu 4</h3>
+        <button class="btn-toggle" onclick="toggleLamp(4)" id="lamp4">OFF</button>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
