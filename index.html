@@ -1,53 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartHome Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartHome Dashboard</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #0d1117;
-            color: white;
-            padding: 20px;
-        }
-        .card {
-            background: #161b22;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-        }
-        h2 {
-            margin-top: 0;
-        }
-    </style>
+<style>
+    body {
+        margin: 0;
+        font-family: Poppins, sans-serif;
+        background: linear-gradient(135deg, #1f1f47, #23235A);
+        color: white;
+        overflow-x: hidden;
+    }
+
+    .header {
+        text-align: center;
+        padding: 20px;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        transition: 0.25s;
+    }
+    .card:hover {
+        transform: scale(1.03);
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .value {
+        font-size: 36px;
+        font-weight: 700;
+        margin-top: 10px;
+    }
+
+    /* =============== WEATHER ICONS =============== */
+    .weather-icon {
+        font-size: 60px;
+        margin-bottom: 10px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0); }
+    }
+
+    /* =============== LAMP CONTROLLER =============== */
+    .lamp-btn {
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 12px;
+        border: none;
+        width: 100%;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+    .lamp-on {
+        background: #00e676;
+    }
+    .lamp-off {
+        background: #e53935;
+    }
+
+</style>
 </head>
-
 <body>
 
-    <h1>SmartHome Dashboard</h1>
+<div class="header">SMART HOME DASHBOARD</div>
 
+<div class="grid">
+
+    <!-- WEATHER -->
     <div class="card">
-        <h2>Suhu & Cuaca</h2>
-        <p>Suhu Ruangan : <span id="suhu">--</span>°C</p>
-        <p>Kondisi Cuaca : <span id="cuaca">--</span></p>
+        <div class="title">Kondisi Cuaca</div>
+        <div id="weatherIcon" class="weather-icon">⛅</div>
+        <div class="value" id="weatherText">Mendeteksi...</div>
+    </div>
+
+    <!-- TEMP INDOOR -->
+    <div class="card">
+        <div class="title">Suhu Dalam Rumah</div>
+        <div class="value" id="tempIndoor">--°C</div>
+    </div>
+
+    <!-- TEMP OUTDOOR -->
+    <div class="card">
+        <div class="title">Suhu Luar Rumah</div>
+        <div class="value" id="tempOutdoor">--°C</div>
+    </div>
+
+    <!-- GAS MONITOR -->
+    <div class="card">
+        <div class="title">Gas MQ-2</div>
+        <div class="value" id="gasValue">--</div>
+    </div>
+
+    <!-- TIME OF DAY -->
+    <div class="card">
+        <div class="title">Waktu</div>
+        <div class="value" id="timeOfDay">--</div>
+    </div>
+
+    <!-- LAMP CONTROL -->
+    <div class="card">
+        <div class="title">Lampu 1</div>
+        <button class="lamp-btn lamp-off" onclick="toggleLamp(1)">OFF</button>
     </div>
 
     <div class="card">
-        <h2>Monitoring Gas</h2>
-        <p>Gas Status : <span id="gas">--</span></p>
+        <div class="title">Lampu 2</div>
+        <button class="lamp-btn lamp-off" onclick="toggleLamp(2)">OFF</button>
     </div>
 
     <div class="card">
-        <h2>Lampu</h2>
-        <button onclick="toggleLampu(1)">Lampu 1</button>
-        <button onclick="toggleLampu(2)">Lampu 2</button>
-        <button onclick="toggleLampu(3)">Lampu 3</button>
-        <button onclick="toggleLampu(4)">Lampu 4</button>
+        <div class="title">Lampu 3</div>
+        <button class="lamp-btn lamp-off" onclick="toggleLamp(3)">OFF</button>
     </div>
 
-    <script src="script.js"></script>
+    <div class="card">
+        <div class="title">Lampu 4</div>
+        <button class="lamp-btn lamp-off" onclick="toggleLamp(4)">OFF</button>
+    </div>
+
+</div>
+
+<script>
+// Update weather UI
+function updateWeather(status) {
+    let icon = "⛅";
+    if (status === "hujan") icon = "🌧️";
+    else if (status === "panas") icon = "☀️";
+    else if (status === "mendung") icon = "☁️";
+    else if (status === "berkabut") icon = "🌫️";
+
+    document.getElementById("weatherIcon").textContent = icon;
+    document.getElementById("weatherText").textContent = status.toUpperCase();
+}
+
+// Toggle Lampu
+function toggleLamp(id) {
+    fetch(http://localhost:3000/lamp/${id}/toggle)
+        .then(r => r.json())
+        .then(res => {
+            let btn = document.querySelectorAll(".lamp-btn")[id - 1];
+            if (res.state === 1) {
+                btn.classList.remove("lamp-off");
+                btn.classList.add("lamp-on");
+                btn.textContent = "ON";
+            } else {
+                btn.classList.remove("lamp-on");
+                btn.classList.add("lamp-off");
+                btn.textContent = "OFF";
+            }
+        });
+}
+
+// Auto update dashboard
+setInterval(() => {
+    fetch("http://localhost:3000/data")
+        .then(r => r.json())
+        .then(d => {
+            document.getElementById("tempIndoor").textContent = d.tempIndoor + "°C";
+            document.getElementById("tempOutdoor").textContent = d.tempOutdoor + "°C";
+            document.getElementById("gasValue").textContent = d.gas + " ppm";
+            document.getElementById("timeOfDay").textContent = d.time;
+            updateWeather(d.weather);
+        });
+}, 1500);
+</script>
 
 </body>
 </html>
