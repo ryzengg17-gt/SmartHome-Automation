@@ -1,68 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartHome Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="topbar">
-    <h1>SmartHome Dashboard</h1>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-</header>
+<div class="topbar">
+    <h2>SmartHome Dashboard</h2>
+    <button class="btn" onclick="openPopup()">Ganti Password</button>
+</div>
 
-<div class="container fade-in">
+<div class="dashboard-container">
 
-    <!-- Cuaca -->
-    <div class="card weather-card">
-        <h2>Cuaca Luar Rumah</h2>
-        <div id="weatherIcon" class="weather-icon">☁️</div>
-        <p id="weatherStatus">Menunggu data...</p>
-        <p id="weatherTemp">0°C</p>
-    </div>
+    <div class="cards">
 
-    <!-- Suhu Dalam -->
-    <div class="card">
-        <h2>Suhu Dalam Rumah</h2>
-        <p id="indoorTemp" class="big-number">0°C</p>
-    </div>
-
-    <!-- Gas -->
-    <div class="card">
-        <h2>Gas Monitoring</h2>
-        <p id="gasStatus" class="big-number">Normal</p>
-    </div>
-
-    <!-- Lampu -->
-    <div class="card">
-        <h2>Kontrol Lampu</h2>
-
-        <div class="lamp">
-            Lampu 1:
-            <button class="lamp-btn" onclick="toggleLamp(1)" id="lamp1">OFF</button>
+        <div class="card">
+            <h3>Lampu 1</h3>
+            <div class="switch" onclick="toggleLamp('lamp1')" id="lamp1">
+                <div class="switch-circle"></div>
+            </div>
         </div>
 
-        <div class="lamp">
-            Lampu 2:
-            <button class="lamp-btn" onclick="toggleLamp(2)" id="lamp2">OFF</button>
+        <div class="card">
+            <h3>Lampu 2</h3>
+            <div class="switch" onclick="toggleLamp('lamp2')" id="lamp2">
+                <div class="switch-circle"></div>
+            </div>
         </div>
 
-        <div class="lamp">
-            Lampu 3:
-            <button class="lamp-btn" onclick="toggleLamp(3)" id="lamp3">OFF</button>
+        <div class="card">
+            <h3>Lampu 3</h3>
+            <div class="switch" onclick="toggleLamp('lamp3')" id="lamp3">
+                <div class="switch-circle"></div>
+            </div>
         </div>
 
-        <div class="lamp">
-            Lampu 4:
-            <button class="lamp-btn" onclick="toggleLamp(4)" id="lamp4">OFF</button>
+        <div class="card">
+            <h3>Lampu 4</h3>
+            <div class="switch" onclick="toggleLamp('lamp4')" id="lamp4">
+                <div class="switch-circle"></div>
+            </div>
         </div>
 
     </div>
+</div>
 
+<!-- Popup Ganti Password -->
+<div class="popup" id="popup">
+    <div class="box">
+        <h3>Ganti Username & Password</h3>
+
+        <input id="newUser" class="input" placeholder="Username baru"><br><br>
+        <input id="newPass" class="input" type="password" placeholder="Password baru"><br><br>
+
+        <button class="btn" onclick="saveNewLogin()">Simpan</button>
+        <button class="btn" style="background:#999;margin-top:10px" onclick="closePopup()">Batal</button>
+    </div>
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>

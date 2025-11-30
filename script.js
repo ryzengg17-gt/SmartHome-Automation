@@ -1,53 +1,45 @@
-/* ===== LOGIN SYSTEM ===== */
+// ========== LOGIN SYSTEM ==========
+let defaultUser = localStorage.getItem("user") || "admin";
+let defaultPass = localStorage.getItem("pass") || "12345";
+
 function login() {
-    let user = document.getElementById("username").value;
-    let pass = document.getElementById("password").value;
+    let u = document.getElementById("username").value;
+    let p = document.getElementById("password").value;
 
-    if (user === "admin" && pass === "12345") {
-        window.location.href = "index.html";
+    if (u === defaultUser && p === defaultPass) {
+        window.location.href = "dashboard.html";
     } else {
-        alert("Username atau Password salah!");
+        alert("Username atau password salah!");
     }
 }
 
-function logout() {
-    window.location.href = "login.html";
-}
-
-/* ===== LAMPU ===== */
+// ========== LAMPU ON/OFF ==========
 function toggleLamp(id) {
-    let btn = document.getElementById("lamp" + id);
-
-    if (btn.classList.contains("on")) {
-        btn.classList.remove("on");
-        btn.innerText = "OFF";
-    } else {
-        btn.classList.add("on");
-        btn.innerText = "ON";
-    }
+    let sw = document.getElementById(id);
+    sw.classList.toggle("on");
 }
 
-/* ===== CUACA (DEMO SAAT BELUM ADA SENSOR) ===== */
-function updateWeather(status) {
-    const icon = document.getElementById("weatherIcon");
-    const text = document.getElementById("weatherStatus");
-
-    if (!icon || !text) return;
-
-    if (status === "rain") {
-        icon.innerHTML = "🌧️";
-        text.innerText = "Hujan";
-    } else if (status === "sun") {
-        icon.innerHTML = "☀️";
-        text.innerText = "Cerah";
-    } else if (status === "cloud") {
-        icon.innerHTML = "☁️";
-        text.innerText = "Mendung";
-    }
+// ========== POPUP GANTI PASSWORD ==========
+function openPopup() {
+    document.getElementById("popup").style.display = "flex";
 }
 
-// contoh animasi demo
-setInterval(() => {
-    let w = ["rain", "sun", "cloud"];
-    updateWeather(w[Math.floor(Math.random()*3)]);
-}, 5000);
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+function saveNewLogin() {
+    let newU = document.getElementById("newUser").value;
+    let newP = document.getElementById("newPass").value;
+
+    if (newU === "" || newP === "") {
+        alert("Tidak boleh kosong!");
+        return;
+    }
+
+    localStorage.setItem("user", newU);
+    localStorage.setItem("pass", newP);
+
+    alert("Login berhasil diperbarui!");
+    closePopup();
+}
