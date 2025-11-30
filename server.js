@@ -1,97 +1,147 @@
+// server.js
 const express = require('express');
+const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
+const session = require('express-session');
 const cors = require('cors');
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({
+  secret: 'replace_this_with_strong_secret', // ganti di production
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 8 } // 8 jam
+}));
 
-// ===== LOAD / CREATE USERS FILE =====
-const userFile = './users.json';
+// Files
+const USERS_FILE = path.join(__dirname, 'users.json');
+const DATA_FILE = path.join(__dirname, 'data.json');
 
-if (!fs.existsSync(userFile)) {
-    fs.writeFileSync(userFile, JSON.stringify({
-        username: "admin",
-        password: "12345"
-    }, null, 2));
+// Ensure users.json exists (create default admin if not)
+function ensureFiles() {
+  if (!fs.existsSync(USERS_FILE)) {
+    // default admin: username admin, password ChangeMe123 (hashed)
+    const pw = bcrypt.hashSync('ChangeMe123', 10);
+    const users = { admin: { passwordHash: pw } };
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    console.log('Created default users.json (username: admin, password: ChangeMe123). Change it ASAP.');
+  }
+  if (!fs.existsSync(DATA_FILE)) {
+    // initial virtual data (no hardware yet)
+    const data = {
+      lamps: { l1: false, l2: false, l3: false, l4: false },
+      sensors: {
+        indoorTemp: null,
+        indoorHum: null,
+        outdoorTemp: null,
+        outdoorHum: null,
+        gasPpm: null,
+        weather: 'unknown', // sunny, rainy, cloudy, fog
+        timeOfDay: 'unknown' // morning, day, afternoon, night
+      },
+      lastUpdate: Date.now()
+    };
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+  }
+}
+ensureFiles();
+
+// Serve static frontend
+app.use('/', express.static(path.join(__dirname, 'public')));
+
+// AUTH middleware
+function requireAuth(req, res, next) {
+  if (req.session && req.session.user) return next();
+  return res.status(401).json({ ok: false, error: 'Unauthorized' });
 }
 
-// Load user login data
-function loadUser() {
-    return JSON.parse(fs.readFileSync(userFile));
-}
+// --- AUTH APIs ---
 
-// Save user login data
-function saveUser(data) {
-    fs.writeFileSync(userFile, JSON.stringify(data, null, 2));
-}
-
-// ====================================
-// 🔐 LOGIN API
-// ====================================
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const user = loadUser();
-
-    if (username === user.username && password === user.password) {
-        return res.json({ success: true });
-    }
-    res.json({ success: false, message: "Username atau password salah" });
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+  const users = JSON.parse(fs.readFileSync(USERS_FILE));
+  if (!users[username]) return res.json({ ok: false, error: 'Invalid credentials' });
+  const u = users[username];
+  if (bcrypt.compareSync(password, u.passwordHash)) {
+    req.session.user = username;
+    return res.json({ ok: true, user: username });
+  } else {
+    return res.json({ ok: false, error: 'Invalid credentials' });
+  }
 });
 
-// ====================================
-// 🔐 CHANGE USERNAME & PASSWORD
-// ====================================
-app.post('/change-credentials', (req, res) => {
-    const { oldUser, oldPass, newUser, newPass } = req.body;
-    const user = loadUser();
-
-    if (oldUser === user.username && oldPass === user.password) {
-        saveUser({
-            username: newUser,
-            password: newPass
-        });
-        return res.json({ success: true, message: "Berhasil diganti!" });
-    }
-    res.json({ success: false, message: "Data lama salah!" });
+app.post('/api/logout', requireAuth, (req, res) => {
+  req.session.destroy(() => {
+    res.json({ ok: true });
+  });
 });
 
-// ====================================
-// 💡 LAMPU (4 lampu) — sementara disimpan lokal
-// ====================================
-let lampState = {
-    lamp1: false,
-    lamp2: false,
-    lamp3: false,
-    lamp4: false
-};
-
-app.get('/lamp', (req, res) => {
-    res.json(lampState);
+// Change admin username/password (only logged-in admin)
+app.post('/api/change-credentials', requireAuth, (req, res) => {
+  const { newUsername, newPassword } = req.body;
+  if (!newUsername || !newPassword) return res.json({ ok: false, error: 'Missing fields' });
+  const users = JSON.parse(fs.readFileSync(USERS_FILE));
+  const oldUser = req.session.user;
+  const pwHash = bcrypt.hashSync(newPassword, 10);
+  // remove old user, set new
+  delete users[oldUser];
+  users[newUsername] = { passwordHash: pwHash };
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  req.session.user = newUsername; // keep session
+  return res.json({ ok: true, user: newUsername });
 });
 
-app.post('/lamp', (req, res) => {
-    const { lamp, state } = req.body;
-    lampState[lamp] = state;
-    res.json({ success: true, lampState });
+// --- Data APIs ---
+// Get current status (for dashboard polling)
+app.get('/api/status', requireAuth, (req, res) => {
+  const data = JSON.parse(fs.readFileSync(DATA_FILE));
+  return res.json({ ok: true, data });
 });
 
-// ====================================
-// 🌡 SENSOR DATA (dummy dulu)
-// ====================================
-app.get('/sensor', (req, res) => {
-    res.json({
-        suhu: 28.5,
-        kelembaban: 75,
-        gas: 120,
-        cuaca: "Hujan",
-        luar_suhu: 26,
-        waktu: "Sore"
-    });
+// Toggle lamp (virtual)
+app.post('/api/toggle-lamp', requireAuth, (req, res) => {
+  const { lamp } = req.body; // lamp: l1/l2/l3/l4
+  const data = JSON.parse(fs.readFileSync(DATA_FILE));
+  if (!data.lamps.hasOwnProperty(lamp)) return res.json({ ok: false, error: 'Invalid lamp' });
+  data.lamps[lamp] = !data.lamps[lamp];
+  data.lastUpdate = Date.now();
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+  return res.json({ ok: true, lamp, state: data.lamps[lamp] });
 });
 
-// ====================================
+// Set sensor data (for simulation/testing) - in real project ESP32 would call this
+app.post('/api/set-sensors', requireAuth, (req, res) => {
+  const data = JSON.parse(fs.readFileSync(DATA_FILE));
+  const incoming = req.body;
+  // allow partial updates
+  if (incoming.sensors) {
+    data.sensors = Object.assign(data.sensors || {}, incoming.sensors);
+  }
+  if (incoming.lamps) {
+    data.lamps = Object.assign(data.lamps || {}, incoming.lamps);
+  }
+  data.lastUpdate = Date.now();
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+  return res.json({ ok: true, data });
+});
+
+// Serve user info
+app.get('/api/user', requireAuth, (req, res) => {
+  return res.json({ ok: true, user: req.session.user });
+});
+
+// Fallback
+app.use((req, res) => {
+  res.status(404).json({ ok: false, error: 'Not found' });
+});
+
 app.listen(PORT, () => {
-    console.log(Server berjalan di port ${PORT});
+  console.log(Server running on http://localhost:${PORT});
 });

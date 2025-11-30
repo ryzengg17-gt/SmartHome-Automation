@@ -1,25 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
-<title>Login - Smart Home</title>
+  <meta charset="utf-8" />
+  <title>SmartHome — Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/style.css">
 </head>
-<body class="login-body">
-
-<div class="login-container">
-    <h2 class="login-title">Smart Home Login</h2>
-
-    <form id="loginForm">
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
-
-        <button type="submit" class="btn-login">Login</button>
-        <p id="loginMsg" class="err-msg"></p>
-    </form>
-</div>
-
-<script src="script.js"></script>
+<body class="bg">
+  <main class="center-card">
+    <div class="card">
+      <h1 class="brand">SmartHome</h1>
+      <p class="muted">Masuk sebagai admin</p>
+      <form id="loginForm">
+        <label>Username
+          <input id="u" name="username" required />
+        </label>
+        <label>Password
+          <input id="p" name="password" type="password" required />
+        </label>
+        <button class="btn primary" type="submit">Login</button>
+        <div id="err" class="error"></div>
+      </form>
+      <p class="small muted">Default admin / ChangeMe123 — ganti segera.</p>
+    </div>
+  </main>
+  <script>
+    const form = document.getElementById('loginForm');
+    const err = document.getElementById('err');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.textContent = '';
+      const u = document.getElementById('u').value.trim();
+      const p = document.getElementById('p').value;
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const j = await res.json();
+        if (j.ok) {
+          window.location = '/index.html';
+        } else {
+          err.textContent = j.error || 'Login failed';
+        }
+      } catch(errx) {
+        err.textContent = 'Network error';
+      }
+    });
+  </script>
 </body>
 </html>
