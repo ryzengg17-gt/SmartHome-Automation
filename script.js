@@ -1,34 +1,53 @@
-// ------------------- LAMPU ------------------------
-function toggleLamp(id) {
-    const btn = document.getElementById("lamp" + id);
-    const current = btn.classList.contains("on");
+/* ===== LOGIN SYSTEM ===== */
+function login() {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
 
-    if (current) {
+    if (user === "admin" && pass === "12345") {
+        window.location.href = "index.html";
+    } else {
+        alert("Username atau Password salah!");
+    }
+}
+
+function logout() {
+    window.location.href = "login.html";
+}
+
+/* ===== LAMPU ===== */
+function toggleLamp(id) {
+    let btn = document.getElementById("lamp" + id);
+
+    if (btn.classList.contains("on")) {
         btn.classList.remove("on");
         btn.innerText = "OFF";
-        fetch(/lamp/${id}/off);
     } else {
         btn.classList.add("on");
         btn.innerText = "ON";
-        fetch(/lamp/${id}/on);
     }
 }
 
-// ------------------- UPDATE SENSOR ------------------------
-async function loadData() {
-    try {
-        const r = await fetch("/data");
-        const data = await r.json();
+/* ===== CUACA (DEMO SAAT BELUM ADA SENSOR) ===== */
+function updateWeather(status) {
+    const icon = document.getElementById("weatherIcon");
+    const text = document.getElementById("weatherStatus");
 
-        document.getElementById("cuaca").innerHTML = data.cuaca;
-        document.getElementById("suhuDalam").innerHTML = data.suhuDalam + " °C";
-        document.getElementById("suhuLuar").innerHTML = data.suhuLuar + " °C";
-        document.getElementById("gas").innerHTML = data.gas;
+    if (!icon || !text) return;
 
-    } catch(e) {
-        console.log("Gagal mengambil data");
+    if (status === "rain") {
+        icon.innerHTML = "🌧️";
+        text.innerText = "Hujan";
+    } else if (status === "sun") {
+        icon.innerHTML = "☀️";
+        text.innerText = "Cerah";
+    } else if (status === "cloud") {
+        icon.innerHTML = "☁️";
+        text.innerText = "Mendung";
     }
 }
 
-setInterval(loadData, 2000);
-loadData();
+// contoh animasi demo
+setInterval(() => {
+    let w = ["rain", "sun", "cloud"];
+    updateWeather(w[Math.floor(Math.random()*3)]);
+}, 5000);

@@ -1,35 +1,68 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login Smart Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHome Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="login-container">
-    <div class="login-box">
-        <h2>Smart Home Login</h2>
+<header class="topbar">
+    <h1>SmartHome Dashboard</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</header>
 
-        <input id="username" type="text" placeholder="Username">
-        <input id="password" type="password" placeholder="Password">
+<div class="container fade-in">
 
-        <button onclick="login()">Masuk</button>
+    <!-- Cuaca -->
+    <div class="card weather-card">
+        <h2>Cuaca Luar Rumah</h2>
+        <div id="weatherIcon" class="weather-icon">☁️</div>
+        <p id="weatherStatus">Menunggu data...</p>
+        <p id="weatherTemp">0°C</p>
     </div>
+
+    <!-- Suhu Dalam -->
+    <div class="card">
+        <h2>Suhu Dalam Rumah</h2>
+        <p id="indoorTemp" class="big-number">0°C</p>
+    </div>
+
+    <!-- Gas -->
+    <div class="card">
+        <h2>Gas Monitoring</h2>
+        <p id="gasStatus" class="big-number">Normal</p>
+    </div>
+
+    <!-- Lampu -->
+    <div class="card">
+        <h2>Kontrol Lampu</h2>
+
+        <div class="lamp">
+            Lampu 1:
+            <button class="lamp-btn" onclick="toggleLamp(1)" id="lamp1">OFF</button>
+        </div>
+
+        <div class="lamp">
+            Lampu 2:
+            <button class="lamp-btn" onclick="toggleLamp(2)" id="lamp2">OFF</button>
+        </div>
+
+        <div class="lamp">
+            Lampu 3:
+            <button class="lamp-btn" onclick="toggleLamp(3)" id="lamp3">OFF</button>
+        </div>
+
+        <div class="lamp">
+            Lampu 4:
+            <button class="lamp-btn" onclick="toggleLamp(4)" id="lamp4">OFF</button>
+        </div>
+
+    </div>
+
 </div>
 
-<script>
-function login() {
-    const u = document.getElementById("username").value;
-    const p = document.getElementById("password").value;
-
-    if (u === "admin" && p === "1234") {
-        window.location.href = "index.html";
-    } else {
-        alert("Username / Password salah!");
-    }
-}
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>

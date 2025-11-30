@@ -1,130 +1,134 @@
-/* GOOGLE FONT */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-/* GLOBAL */
+/* ===== GLOBAL ===== */
 body {
+    font-family: "Poppins", sans-serif;
     margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(145deg, #0f172a, #1e293b);
+    background: linear-gradient(135deg, #0d1b2a, #1b263b);
     color: white;
 }
 
-/* LOGIN PAGE ------------------------------------------------------- */
-.login-container {
-    width: 100%;
-    height: 100vh;
+/* Animasi Fade */
+.fade-in {
+    animation: fadeIn 0.8s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== LOGIN PAGE ===== */
+.login-body {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
 }
 
-.login-box {
-    background: #1e293b;
-    padding: 35px;
-    width: 350px;
+.login-container {
+    background: #1b263b;
+    padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    animation: fadeIn 0.7s ease;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
-.login-box h2 {
-    text-align: center;
+.login-title {
     margin-bottom: 20px;
-    font-weight: 600;
 }
 
 .login-box input {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 10px;
+    padding: 10px;
+    margin: 8px 0;
     border: none;
-    background: #334155;
-    color: white;
-    outline: none;
-    font-size: 14px;
-    transition: 0.3s;
+    border-radius: 8px;
 }
 
-.login-box input:focus {
-    background: #475569;
-}
-
-.login-box button {
+.login-btn {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
+    margin-top: 15px;
     border: none;
-    background: #3b82f6;
     border-radius: 10px;
+    background: #00a8e8;
     color: white;
     font-size: 16px;
-    margin-top: 10px;
     cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s;
 }
 
-.login-box button:hover {
-    background: #2563eb;
+.login-btn:hover {
+    background: #0077b6;
 }
 
-/* DASHBOARD -------------------------------------------------------- */
-
-.header-title {
-    text-align: center;
-    padding: 20px;
-    font-size: 28px;
-    font-weight: 600;
+.login-footer {
+    margin-top: 15px;
+    font-size: 12px;
+    opacity: 0.7;
 }
 
-.dashboard {
+/* ===== DASHBOARD ===== */
+.topbar {
+    padding: 15px;
+    background: #0d1b2a;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logout-btn {
+    background: #e63946;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.container {
     display: grid;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    padding: 25px;
 }
 
 .card {
-    background: #1e293b;
+    background: #1b263b;
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    animation: fadeIn 0.7s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    text-align: center;
 }
 
-.card h3 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
+.big-number {
+    font-size: 35px;
+    font-weight: bold;
 }
 
-.value {
-    font-size: 40px;
-    margin-top: 15px;
-    font-weight: 700;
-    text-align: right;
+/* Weather Icon */
+.weather-icon {
+    font-size: 55px;
+    margin: 10px 0;
+    animation: float 2s infinite ease-in-out;
 }
 
-.btn-toggle {
-    width: 100%;
-    padding: 12px;
-    background: #dc2626;
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* Lamp Control */
+.lamp {
+    margin: 10px 0;
+}
+
+.lamp-btn {
+    padding: 6px 15px;
     border: none;
     border-radius: 10px;
-    color: white;
-    font-size: 18px;
     cursor: pointer;
-    margin-top: 15px;
-    transition: 0.2s;
+    background: #2a9d8f;
+    color: white;
 }
 
-.btn-toggle.on {
-    background: #16a34a;
-}
-
-/* ANIMASI -------------------------------------------------------- */
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to   { opacity: 1; transform: translateY(0); }
+.lamp-btn.on {
+    background: #06d6a0;
 }
